@@ -25,7 +25,7 @@ export interface IExercise extends Document {
     bp: BodyPart
 }
 
-const exerciseSchema = new Schema<IExercise>({
+export const exerciseSchema = new Schema<IExercise>({
     name: { type: String, required: true, unique: true },
     desc: { type: String, required: true},
     tutorial: { type: String, required: true },

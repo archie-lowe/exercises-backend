@@ -6,40 +6,25 @@ import { findAndRank } from './services.js';
 
 export async function fetchExercises(req: Request, res: Response) {
     try {
-        let { q = '' } = req.query;
+        let { q } = req.query;
 
-        if (typeof q !== 'string')  {
-            return res.status(400).json({
-                error: 'Bad Request',
-                error_description: 'Invalid query parameter name. Must be a string'
-            })
-        }
-
-        const keywords = q.trim().split(' ');
-
-        if (!keywords.length) {
-            return res.status(400).json({
-                error: 'Bad Request',
-                error_description: 'Missing query parameter \'q\''
-            });
-        }
-
+        const keywords = !q ? [''] : q.toString().trim().split(' ')
         const ranked = await findAndRank(keywords);
 
         if (!ranked.length) {
             return res.status(404).json({
                 error: 'Bad Request',
                 error_description: 'Exercise not found'
-            })
+            });
         }
 
-        res.json(Array.from(ranked)); // defaults to status code 200
+        res.json(Array.from(ranked));
 
     } catch (err: any) {
         res.status(500).json({
             error: 'Internal Server Error',
             error_description: err.message
-        })
+        });
     }
 }
 
@@ -187,17 +172,9 @@ export async function deleteExercise(req: Request, res: Response) {
 
         res.status(200).json(exercise)
     } catch (err: any) {
-        if (err instanceof mongoose.Error) { // BadRequest
-            res.status(400).json({
-                error: 'Bad Request',
-                error_description: err.message
-            })
-        }
-        else {
-            res.status(500).json({ // InternalServerError
-                error: 'Internal Server Error',
-                error_description: err.message
-            })
-        }
+        res.status(500).json({ // InternalServerError
+            error: 'Internal Server Error',
+            error_description: err.message
+        });
     }
 }

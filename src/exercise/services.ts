@@ -3,26 +3,29 @@ import { Exercise } from './models.js'
 import type { ExerciseDoc } from './models.js'
 
 export async function findAndRank(keywords: string[]): Promise<ExerciseDoc[]> {
-    const ranking: Map<ExerciseDoc, number> = new Map();
+    const ranking: Map<string, { doc: ExerciseDoc, count: number }> = new Map();
+    
     for (const word of keywords) {
         const regex = new RegExp(`\\b${word}`, 'i'); // Matches the start of a word
         const matches = await Exercise.find({
             $or:[
                 {name: regex},
-                {bp: regex}]
-            });
+                {bp: regex}
+            ]
+        });
+        
         matches.forEach(match => {
-            // lodash.isequal to find using value-based match. Reference based match (.has) won't work (two different obj)
-            const exercise = Array.from(ranking.keys()).find(exercise => isEqual(exercise, match));
-            if (exercise) {
-                ranking.set(exercise, ranking.get(exercise)! + 1)
+            const id = match._id.toString(); // Use string ID as key instead of object comparison
+            
+            if (ranking.has(id)) {
+                ranking.get(id)!.count += 1;
             } else {
-                ranking.set(match, 1);
+                ranking.set(id, { doc: match, count: 1 });
             }
         });
     }
     
-    return Array.from(ranking.entries())
-        .sort((a, b) => b[1] - a[1]) // descending by value
-        .map((entry) => entry[0]); // get the key
+    return Array.from(ranking.values())
+        .sort((a, b) => b.count - a.count) // descending by count
+        .map((entry) => entry.doc); // get the document
 }
