@@ -21,9 +21,9 @@ describe('Exercises Backend', () => {
 
     beforeEach(async () => {
         const exercises = await Exercise.create([
-            { name: 'shoulder',  desc: 'testing testing shoulder', tutorial: 'helpful tutorial', bp: 'shoulders'},
-            { name: 'arms',  desc: 'testing testing arms', tutorial: 'helpful tutorial', bp: 'arms'},
-            { name: 'chest',  desc: 'testing testing chest', tutorial: 'helpful tutorial', bp: 'chest'}
+            { name: 'bench press',  desc: 'testing testing chest', tutorial: 'helpful tutorial', bp: 'chest'},
+            { name: 'bicep curls',  desc: 'testing testing arms', tutorial: 'helpful tutorial', bp: 'arms'},
+            { name: 'shoulder press',  desc: 'testing testing shoulder', tutorial: 'helpful tutorial', bp: 'shoulders'}
         ])
         ids = exercises.map(e => e._id.toString())
     })
@@ -35,9 +35,13 @@ describe('Exercises Backend', () => {
 
     describe('GET exercises', () => {
         it('should return exercises with search query', async () => {
-            const res = await request(app).get('/v1/exercises?q=chest');
+            const q = encodeURIComponent('shoulder press')
+            const res = await request(app).get(`/v1/exercises?q=${q}`);
             expect(res.status).toBe(200);
+            expect(res.body.length).toBe(2);
             await validateExercises(res.body);
+            expect(res.body[0].name === 'shoulder press')
+            expect(res.body[1].name === 'bench press')
         });
     
         // UPDATED: Return all exercises when query parameter is missing
@@ -239,7 +243,7 @@ describe('Exercises Backend', () => {
             // Try to update second exercise to have same name as first
             const res = await request(app)
                 .put(`/v1/exercises/${secondId}`)
-                .send({ name: "shoulder" }); // Name from ids[0]
+                .send({ name: "bench press" }); // Name from ids[0]
 
             expect(res.status).toBe(409);
             expect(res.body.error).toBe('An exercise with this name already exists');
