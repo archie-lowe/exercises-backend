@@ -172,17 +172,9 @@ export async function deleteExercise(req: Request, res: Response) {
 
         res.status(200).json(exercise)
     } catch (err: any) {
-        if (err instanceof mongoose.Error) { // BadRequest
-            res.status(400).json({
-                error: 'Bad Request',
-                error_description: err.message
-            })
-        }
-        else {
-            res.status(500).json({ // InternalServerError
-                error: 'Internal Server Error',
-                error_description: err.message
-            })
-        }
+        res.status(500).json({ // InternalServerError
+            error: 'Internal Server Error',
+            error_description: err.message
+        });
     }
 }
