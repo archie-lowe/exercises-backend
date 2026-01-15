@@ -7,7 +7,9 @@ import { findAndRank } from './services.js';
 export async function fetchExercises(req: Request, res: Response) {
     try {
         let { q } = req.query;
+        const auth = req.auth;
         console.log(q)
+        console.log(auth?.payload)
 
         const keywords = !q ? [''] : q.toString().trim().split(' ')
         console.log(keywords)
