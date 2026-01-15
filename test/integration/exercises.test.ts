@@ -1,8 +1,14 @@
 import request from 'supertest';
 import { MongoMemoryServer } from 'mongodb-memory-server';
 import mongoose from 'mongoose';
-import app from '../../src/app.js';
+import { jest } from '@jest/globals'
 import { Exercise, exerciseSchema } from '../../src/exercise/models.js';
+
+jest.unstable_mockModule('express-oauth2-jwt-bearer', () => ({
+    auth: (jest.fn(() => (req, res, next) => next()))
+  }));
+
+const { default: app } = await import ('../../src/app.js')
 
 describe('Exercises Backend', () => {
     let mongoServer: MongoMemoryServer;
@@ -25,7 +31,13 @@ describe('Exercises Backend', () => {
             { name: 'bicep curls',  desc: 'testing testing arms', tutorial: 'helpful tutorial', bp: 'arms'},
             { name: 'shoulder press',  desc: 'testing testing shoulder', tutorial: 'helpful tutorial', bp: 'shoulders'}
         ])
-        ids = exercises.map(e => e._id.toString())
+        ids = exercises.map(e => e._id.toString());
+
+        // (authMock as jest.Mock).mockImplementation(
+        //     (req: Request, res: Response, next: NextFunction) => {
+        //       next();
+        //     }
+        //   );
     })
 
     afterEach(async () => {

@@ -11,8 +11,10 @@ const checkJwt = auth({
     audience: 'http://localhost:3000',
     issuerBaseURL: `https://dev-l2w4rhih6tqllg35.us.auth0.com/`,
   });
+
 const CORS = process.env.CORS || '*';
 const app = express();
+
 // Add this BEFORE your routes
 app.use(cors({
     origin: 'http://localhost:5173' // Vite default port
