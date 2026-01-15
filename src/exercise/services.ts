@@ -1,12 +1,13 @@
 import isEqual from 'lodash.isequal';
 import { Exercise } from './models.js'
 import type { ExerciseDoc } from './models.js'
+import escapeStringRegexp from 'escape-string-regexp';
 
 export async function findAndRank(keywords: string[]): Promise<ExerciseDoc[]> {
     const ranking: Map<string, { doc: ExerciseDoc, count: number }> = new Map();
     
     for (const word of keywords) {
-        const regex = new RegExp(`\\b${word}`, 'i'); // Matches the start of a word
+        const regex = new RegExp(`\\b${escapeStringRegexp(word)}`, 'i'); // Matches the start of a word
         const matches = await Exercise.find({
             $or:[
                 {name: regex},

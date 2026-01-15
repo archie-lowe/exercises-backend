@@ -1,6 +1,6 @@
 import mongoose, { Schema, Document } from "mongoose";
 
-export const BODY_PARTS = ["chest", "shoulders", "arms", "legs", "core"] as const
+export const BODY_PARTS = ["chest", "shoulders", "arms", "legs", "core", "back"] as const
 
 export const EQUIPMENT = [
   "barbell",

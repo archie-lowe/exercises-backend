@@ -7,8 +7,10 @@ import { findAndRank } from './services.js';
 export async function fetchExercises(req: Request, res: Response) {
     try {
         let { q } = req.query;
+        console.log(q)
 
         const keywords = !q ? [''] : q.toString().trim().split(' ')
+        console.log(keywords)
         const ranked = await findAndRank(keywords);
 
         if (!ranked.length) {

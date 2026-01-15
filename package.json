@@ -34,7 +34,9 @@
   "dependencies": {
     "cors": "^2.8.5",
     "dotenv": "^17.2.3",
+    "escape-string-regexp": "^5.0.0",
     "express": "^5.2.1",
+    "express-oauth2-jwt-bearer": "^1.7.3",
     "lodash.isequal": "^4.5.0",
     "mongodb": "^7.0.0",
     "mongoose": "^9.1.2"
